@@ -293,11 +293,6 @@ This project is built with:
 - **Cultural Awareness** - Built for Indian context
 - **Transparency** - Open development process
 
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -313,7 +308,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues** - [GitHub Issues](https://github.com/yourusername/ai-customer-service/issues)
 - **Discussions** - [GitHub Discussions](https://github.com/yourusername/ai-customer-service/discussions)
-- **Email** - [Your Email]
 
 ---
 
