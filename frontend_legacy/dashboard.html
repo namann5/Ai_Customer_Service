@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | AI Sahayak</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chat-preview {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            max-width: 80%;
+        }
+
+        .chat-user {
+            background-color: var(--bg-card);
+            margin-right: auto;
+            border-top-left-radius: 0;
+        }
+
+        .chat-ai {
+            background-color: var(--primary);
+            color: white;
+            margin-left: auto;
+            border-top-right-radius: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="logo">
+                <span>🤖</span> AI Sahayak
+            </a>
+            <div class="flex gap-4 items-center">
+                <span class="badge badge-success">● AI Active</span>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container dashboard-grid animate-fade-in" style="margin-top: 2rem;">
+        <!-- Sidebar -->
+        <aside class="card" style="height: fit-content;">
+            <h3>Overview</h3>
+            <ul style="list-style: none; margin-top: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="#"
+                        style="color: var(--primary); font-weight: bold; text-decoration: none;">📊 Dashboard</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="#"
+                        style="color: var(--text-muted); text-decoration: none;">💬 Conversations</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="#"
+                        style="color: var(--text-muted); text-decoration: none;">⚙️ Settings</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="#"
+                        style="color: var(--text-muted); text-decoration: none;">❓ Help</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Metrics Row -->
+            <div class="card-grid" style="padding-top: 0; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="card metric-card">
+                    <span class="metric-label">Calls Handled</span>
+                    <span class="metric-value">42</span>
+                    <span class="badge badge-success">+12% vs yest</span>
+                </div>
+                <div class="card metric-card">
+                    <span class="metric-label">New Leads</span>
+                    <span class="metric-value">8</span>
+                    <span class="badge badge-success">+2 today</span>
+                </div>
+                <div class="card metric-card">
+                    <span class="metric-label">Bookings</span>
+                    <span class="metric-value">5</span>
+                    <span class="text-muted" style="font-size: 0.875rem;">Confirmed</span>
+                </div>
+                <div class="card metric-card">
+                    <span class="metric-label">Est. Revenue</span>
+                    <span class="metric-value">₹2.5k</span>
+                    <span class="badge badge-warning">Pending</span>
+                </div>
+            </div>
+
+            <!-- Activity Feed & Live Demo -->
+            <div class="grid" style="display: grid; gap: 2rem; grid-template-columns: 1fr;">
+                <div class="card">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3>🔴 Live Interaction</h3>
+                        <div class="flex gap-2">
+                            <button id="testAiBtn" class="btn btn-outline" style="font-size: 0.8rem;">Test AI
+                                Agent</button>
+                        </div>
+                    </div>
+
+                    <div class="chat-preview" id="chatWindow">
+                        <!-- Mock Chat -->
+                        <div class="chat-message chat-user">
+                            <p style="margin:0; font-size: 0.9rem;"><strong>Customer (9876...):</strong> Hello, shop
+                                open hai kya?</p>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">10:02 AM</span>
+                        </div>
+                        <div class="chat-message chat-ai">
+                            <p style="margin:0; font-size: 0.9rem; color: white;"><strong>AI Agent:</strong> Haan ji
+                                sir, hum 9 PM tak open hain. Bataiye kya chahiye?</p>
+                            <span style="font-size: 0.7rem; opacity: 0.8;">10:02 AM</span>
+                        </div>
+                        <div class="chat-message chat-user">
+                            <p style="margin:0; font-size: 0.9rem;"><strong>Customer (9876...):</strong> Appointment
+                                milega doctor sahab ka?</p>
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">10:03 AM</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mt-4">
+                        <input type="text" id="chatInput" placeholder="Type a message to simulate customer..." disabled>
+                        <button class="btn btn-primary" disabled>Send</button>
+                    </div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">* Chat is in read-only
+                        mode until backend is connected.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const businessId = localStorage.getItem('businessId');
+
+        // Redirect if not logged in
+        if (!businessId) {
+            window.location.href = 'onboarding.html';
+        }
+
+        // Fetch Dashboard Metrics
+        async function fetchMetrics() {
+            try {
+                const res = await fetch(`${API_URL}/dashboard/${businessId}`);
+                const data = await res.json();
+
+                // Update UI (Simple mapping for MVP)
+                const cards = document.querySelectorAll('.metric-value');
+                if (cards.length >= 4) {
+                    cards[0].innerText = data.callsHandled || 0;
+                    cards[1].innerText = data.leadsGenerated || 0;
+                    cards[2].innerText = data.bookingsConfirmed || 0;
+                    cards[3].innerText = '₹' + (data.estimatedRevenue || 0);
+                }
+            } catch (err) {
+                console.error("Failed to load metrics", err);
+            }
+        }
+
+        // Interactive Chat Handling
+        const chatWindow = document.getElementById('chatWindow');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.querySelector('.btn-primary[disabled]'); // Initially disabled
+        const testBtn = document.getElementById('testAiBtn');
+
+        // Enable chat controls
+        chatInput.disabled = false;
+        sendBtn.disabled = false;
+        const note = document.querySelector('p[style*="text-muted"]');
+        if (note) note.style.display = 'none';
+
+        function appendMessage(text, isUser) {
+            const div = document.createElement('div');
+            div.className = `chat-message ${isUser ? 'chat-user' : 'chat-ai'}`;
+            div.innerHTML = `
+                <p style="margin:0; font-size: 0.9rem;"><strong>${isUser ? 'You' : 'AI Agent'}:</strong> ${text}</p>
+                <span style="font-size: 0.7rem; ${isUser ? 'color: var(--text-muted);' : 'opacity: 0.8;'}">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            `;
+            chatWindow.appendChild(div);
+            // Scroll to bottom
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // 1. Show User Message
+            appendMessage(text, true);
+            chatInput.value = '';
+
+            // 2. Call API
+            try {
+                // Show thinking indicator (optional)
+
+                const res = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ businessId, message: text })
+                });
+
+                const data = await res.json();
+
+                // 3. Show AI Response
+                appendMessage(data.response, false);
+
+            } catch (err) {
+                appendMessage("Error connecting to AI. Please check backend.", false);
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        testBtn.addEventListener('click', () => {
+            chatInput.focus();
+            alert("Type a message like 'Open kab hote ho?' in the chat box below.");
+        });
+
+        // Load data on start
+        fetchMetrics();
+    </script>
+</body>
+
+</html>
