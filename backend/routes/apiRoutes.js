@@ -6,14 +6,79 @@ const Conversation = require('../models/Conversation');
 const DailyMetric = require('../models/DailyMetric');
 const aiService = require('../services/aiService');
 
+const FAQ = require('../models/FAQ');
+
 // In-memory mock storage
 const mockData = {
     businesses: [],
     conversations: [],
-    metrics: []
+    metrics: [],
+    faqs: [] // Mock FAQs
 };
 
 const isConnected = () => mongoose.connection.readyState === 1;
+
+// @route   GET /api/faqs/:businessId
+// @desc    Get all FAQs for a business
+router.get('/faqs/:businessId', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        if (isConnected()) {
+            const faqs = await FAQ.find({ businessId });
+            res.json(faqs);
+        } else {
+            const faqs = mockData.faqs.filter(f => f.businessId === businessId);
+            res.json(faqs);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
+
+// @route   POST /api/faqs
+// @desc    Add a new FAQ
+router.post('/faqs', async (req, res) => {
+    try {
+        const { businessId, question, answer, category } = req.body;
+
+        if (isConnected()) {
+            const newFAQ = new FAQ({ businessId, question, answer, category });
+            const savedFAQ = await newFAQ.save();
+            res.json(savedFAQ);
+        } else {
+            const newFAQ = {
+                _id: Date.now().toString(),
+                businessId, question, answer, category,
+                createdAt: new Date()
+            };
+            mockData.faqs.push(newFAQ);
+            res.json(newFAQ);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
+
+// @route   DELETE /api/faqs/:id
+// @desc    Delete an FAQ
+router.delete('/faqs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (isConnected()) {
+            await FAQ.findByIdAndDelete(id);
+            res.json({ success: true, message: 'FAQ deleted' });
+        } else {
+            mockData.faqs = mockData.faqs.filter(f => f._id !== id);
+            res.json({ success: true, message: 'FAQ deleted (Mock)' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
 
 // @route   POST /api/onboarding
 // @desc    Register a new business
