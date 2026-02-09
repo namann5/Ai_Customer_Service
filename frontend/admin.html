@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AI Customer Service</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">AI Agent Admin</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chat.html">Chat Demo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="admin-header">
+            <h1>FAQ Management</h1>
+            <p>Teach your AI how to answer common questions.</p>
+        </header>
+
+        <section class="admin-content">
+            <!-- Add FAQ Form -->
+            <div class="card">
+                <h3>Add New FAQ</h3>
+                <form id="faq-form">
+                    <div class="form-group">
+                        <label for="question">Question</label>
+                        <input type="text" id="question" required placeholder="e.g., What are your opening hours?">
+                    </div>
+                    <div class="form-group">
+                        <label for="answer">Answer</label>
+                        <textarea id="answer" rows="3" required
+                            placeholder="e.g., We are open from 9 AM to 9 PM daily."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="General">General</option>
+                            <option value="Pricing">Pricing</option>
+                            <option value="Support">Support</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Add FAQ</button>
+                </form>
+            </div>
+
+            <!-- FAQ List -->
+            <div class="card">
+                <h3>Existing FAQs</h3>
+                <div id="faq-list" class="faq-list">
+                    <!-- FAQs will be loaded here -->
+                    <p class="text-muted">Loading FAQs...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
