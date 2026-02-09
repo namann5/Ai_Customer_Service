@@ -1,0 +1,19 @@
+/* Extended grid for 10 business categories */
+.who-grid-extended {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+}
+
+@media (min-width: 600px) {
+    .who-grid-extended {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .who-grid-extended {
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--space-md);
+    }
+}
