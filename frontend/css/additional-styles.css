@@ -1,0 +1,326 @@
+/* Trust section additional styles */
+.trust-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.trust-content h2 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+}
+
+.trust-content p {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-md);
+}
+
+.trust-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.trust-buttons .btn {
+    width: 100%;
+    max-width: 280px;
+}
+
+@media (min-width: 480px) {
+    .trust-buttons {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .trust-buttons .btn {
+        width: auto;
+    }
+}
+
+@media (min-width: 768px) {
+    .trust-content h2 {
+        font-size: 1.75rem;
+    }
+
+    .trust-content p {
+        font-size: 1.0625rem;
+    }
+}
+
+/* Chat page specific styles */
+.navbar {
+    background-color: var(--color-bg-alt);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--space-md);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: var(--color-text);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--color-accent);
+}
+
+.chat-container {
+    max-width: 800px;
+    margin: var(--space-md) auto;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+    color: white;
+    padding: var(--space-md);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.125rem;
+    text-align: center;
+}
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: var(--space-md);
+    background: var(--color-bg);
+}
+
+.message {
+    margin-bottom: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 12px;
+    max-width: 80%;
+    line-height: 1.5;
+}
+
+.message.user {
+    background: var(--color-accent);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.message.ai {
+    background: var(--color-border);
+    color: var(--color-text);
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-input {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--color-bg-alt);
+    border-top: 1px solid var(--color-border);
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    font-family: var(--font-body);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.chat-input input:focus {
+    border-color: var(--color-accent);
+}
+
+.chat-input button {
+    padding: 12px 24px;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.chat-input button:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-2px);
+}
+
+/* Admin page specific styles */
+.admin-header {
+    text-align: center;
+    margin: var(--space-lg) 0 var(--space-md);
+}
+
+.admin-header h1 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin: 0 0 var(--space-xs);
+    color: var(--color-text);
+}
+
+.admin-header p {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.admin-content {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.card {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-card);
+}
+
+.card h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin: 0 0 var(--space-md);
+    color: var(--color-text);
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--color-text);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    font-family: var(--font-body);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--color-accent);
+}
+
+.btn-primary {
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-2px);
+}
+
+.faq-list {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.faq-item {
+    padding: var(--space-md);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    position: relative;
+}
+
+.faq-item h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 var(--space-xs);
+    color: var(--color-text);
+}
+
+.faq-item p {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-xs);
+}
+
+.faq-item .category {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    background: var(--color-highlight);
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: var(--space-xs);
+}
+
+.faq-item button {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.faq-item button:hover {
+    background: #dc2626;
+}
+
+.text-muted {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
