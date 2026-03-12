@@ -28,6 +28,7 @@ router.get('/customers', customersController.getCustomers);
 
 // Onboarding
 router.post('/onboard', onboardingController.onboard);
+router.get('/business/:id', onboardingController.getBusiness);
 
 // Chat
 router.post('/chat', chatController.chat);

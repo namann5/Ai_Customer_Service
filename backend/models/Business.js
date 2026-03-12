@@ -13,6 +13,8 @@ const businessSchema = new mongoose.Schema({
     services: [{ type: String }], // Array of services offered
     appointment_required: { type: Boolean, default: false },
     human_fallback: { type: Boolean, default: true }, // Allow escalation to human
+    location: { type: String, default: '' },       // Optional: address / area
+    price_range: { type: String, default: '' },    // Optional: e.g. "₹200 - ₹800"
     created_at: { type: Date, default: Date.now }
 });
 
