@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Started — AI Customer Service for Your Business</title>
+  <meta name="description" content="Set up your AI-powered WhatsApp customer service bot in 2 minutes. Answer 6 quick questions and your bot goes live instantly.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/onboard.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="ob-header">
+    <a href="landing.html" class="ob-logo">
+      <span class="ob-logo-dot"></span>
+      AI Agent
+    </a>
+    <a href="landing.html" class="ob-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN FORM CARD
+  ══════════════════════════════════════════════════════════ -->
+  <div class="ob-card" id="form-card">
+
+    <!-- Progress bar -->
+    <div class="ob-progress-wrap">
+      <div class="ob-progress-bar">
+        <div class="ob-progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <span class="ob-progress-label" id="progress-label">Step 1 of 6</span>
+    </div>
+
+    <!-- ── Steps container ── -->
+    <div class="ob-steps-container" id="steps-container">
+
+      <!-- ════ STEP 1 — Business Name ════ -->
+      <div class="ob-step active" id="step-1">
+        <span class="ob-step-badge">✦ Step 1</span>
+        <h2 class="ob-step-title">What's your business name? 🏪</h2>
+        <p class="ob-step-hint">This is what your customers know you by. It'll appear in every AI reply.</p>
+        <div class="ob-field" id="step-1-field">
+          <label class="ob-label" for="business_name">Business Name</label>
+          <input
+            class="ob-input"
+            id="business_name"
+            type="text"
+            placeholder="e.g. Raj Salon, Dr. Verma Clinic, Mohan Kirana…"
+            autocomplete="organization"
+          >
+          <p class="ob-error">Please enter your business name</p>
+        </div>
+      </div>
+
+      <!-- ════ STEP 2 — Business Type ════ -->
+      <div class="ob-step" id="step-2" style="display:none">
+        <span class="ob-step-badge">✦ Step 2</span>
+        <h2 class="ob-step-title">What kind of business do you run? 💼</h2>
+        <p class="ob-step-hint">Choose the one that fits best. This helps the AI understand your customers' questions.</p>
+        <div class="ob-field" id="step-2-field">
+          <div class="ob-chips">
+            <span class="ob-chip" data-type="clinic">🏥 Clinic</span>
+            <span class="ob-chip" data-type="salon">💇 Salon / Spa</span>
+            <span class="ob-chip" data-type="kirana">🛒 Kirana / Retail</span>
+            <span class="ob-chip" data-type="coaching">📚 Coaching / Tuition</span>
+            <span class="ob-chip" data-type="restaurant">🍽️ Restaurant / Café</span>
+            <span class="ob-chip" data-type="pharmacy">💊 Pharmacy</span>
+            <span class="ob-chip" data-type="gym">💪 Gym / Fitness</span>
+            <span class="ob-chip" data-type="real-estate">🏠 Real Estate</span>
+            <span class="ob-chip" data-type="photographer">📸 Photographer</span>
+            <span class="ob-chip" data-type="other">🔧 Other</span>
+          </div>
+          <p class="ob-error">Please select a business type</p>
+        </div>
+      </div>
+
+      <!-- ════ STEP 3 — Phone / WhatsApp ════ -->
+      <div class="ob-step" id="step-3" style="display:none">
+        <span class="ob-step-badge">✦ Step 3</span>
+        <h2 class="ob-step-title">Your WhatsApp number 📱</h2>
+        <p class="ob-step-hint">When a customer needs a human, the AI will share this number. Include country code.</p>
+        <div class="ob-field" id="step-3-field">
+          <label class="ob-label" for="phone">WhatsApp / Phone Number</label>
+          <input
+            class="ob-input"
+            id="phone"
+            type="tel"
+            placeholder="+91 98765 43210"
+            autocomplete="tel"
+          >
+          <p class="ob-error">Please enter a valid phone number</p>
+        </div>
+      </div>
+
+      <!-- ════ STEP 4 — Working Hours ════ -->
+      <div class="ob-step" id="step-4" style="display:none">
+        <span class="ob-step-badge">✦ Step 4</span>
+        <h2 class="ob-step-title">When are you open? 🕐</h2>
+        <p class="ob-step-hint">The AI will use this to answer questions about timings — exactly as you write it.</p>
+        <div class="ob-field" id="step-4-field">
+          <label class="ob-label" for="working_hours">Working Hours</label>
+          <input
+            class="ob-input"
+            id="working_hours"
+            type="text"
+            placeholder="e.g. Mon–Sat, 10 AM – 8 PM. Closed Sundays."
+          >
+          <p class="ob-error">Please enter your working hours</p>
+        </div>
+      </div>
+
+      <!-- ════ STEP 5 — Services ════ -->
+      <div class="ob-step" id="step-5" style="display:none">
+        <span class="ob-step-badge">✦ Step 5</span>
+        <h2 class="ob-step-title">What services do you offer? ✂️</h2>
+        <p class="ob-step-hint">List your main services, separated by commas. The AI will reference these when customers ask.</p>
+        <div class="ob-field" id="step-5-field">
+          <label class="ob-label" for="services">Services (comma separated)</label>
+          <textarea
+            class="ob-textarea"
+            id="services"
+            placeholder="e.g. Haircut, Hair Color, Head Massage, Bridal Makeup, Mehendi…"
+          ></textarea>
+          <p class="ob-error">Please list at least one service</p>
+        </div>
+      </div>
+
+      <!-- ════ STEP 6 — Appointment & Preview ════ -->
+      <div class="ob-step" id="step-6" style="display:none">
+        <span class="ob-step-badge">✦ Step 6</span>
+        <h2 class="ob-step-title">Do customers need to book first? 📅</h2>
+        <p class="ob-step-hint">If yes, your AI bot will ask customers to pick a date/time before confirming.</p>
+        <div class="ob-field" id="step-6-field">
+          <div class="ob-toggle-group">
+            <button class="ob-toggle-btn selected" data-value="false">
+              👋 Walk-ins welcome
+            </button>
+            <button class="ob-toggle-btn" data-value="true">
+              📅 Appointment needed
+            </button>
+          </div>
+        </div>
+
+        <div class="ob-divider"></div>
+
+        <p class="ob-preview-label">🤖 Your AI system prompt preview</p>
+        <pre class="ob-preview" id="prompt-preview">Building preview…</pre>
+        <p style="font-size:0.78rem;color:#64748b;margin-top:4px;">This prompt is auto-generated from your answers and powers your WhatsApp bot.</p>
+      </div>
+
+    </div>
+    <!-- /steps container -->
+
+    <!-- ── Navigation ── -->
+    <div class="ob-nav">
+      <button class="ob-btn ob-btn-ghost" id="back-btn" style="visibility:hidden">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+
+      <button class="ob-btn ob-btn-primary" id="next-btn">
+        Next
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button class="ob-btn ob-btn-primary" id="submit-btn" style="display:none">
+        <span class="ob-spinner"></span>
+        <span class="ob-btn-text">🚀 Launch My Bot</span>
+      </button>
+    </div>
+
+  </div>
+  <!-- /form card -->
+
+  <!-- ══════════════════════════════════════════════════════
+       SUCCESS SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div class="ob-card ob-success" id="success-screen" style="display:none">
+
+    <div class="ob-success-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+
+    <h2>Your bot is live! 🎉</h2>
+    <p>Your AI WhatsApp assistant has been set up successfully. Here's your unique Business ID — save it!</p>
+
+    <div class="ob-id-pill" id="success-business-id">—</div>
+
+    <p class="ob-preview-label">🤖 Auto-generated AI system prompt</p>
+    <pre class="ob-preview" id="success-prompt" style="text-align:left;margin-bottom:24px">Loading…</pre>
+
+    <div class="ob-next-steps">
+      <h4>What happens next?</h4>
+      <ol>
+        <li><strong>Connect WhatsApp:</strong> Link your number via the Twilio / WhatsApp Business API</li>
+        <li><strong>Test it:</strong> Send a message to your WhatsApp number and watch the AI reply</li>
+        <li><strong>View analytics:</strong> Check your <a href="admin.html" style="color:#22c55e;text-decoration:none">Admin Dashboard</a> for conversation stats</li>
+        <li><strong>Add FAQs:</strong> Train the bot with common questions your customers ask</li>
+      </ol>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <a href="chat.html" class="ob-btn ob-btn-primary" style="text-decoration:none">
+        💬 Try Live Chat Demo
+      </a>
+      <a href="landing.html" class="ob-btn ob-btn-ghost" style="text-decoration:none">
+        ← Back to Home
+      </a>
+    </div>
+
+  </div>
+
+  <script src="js/onboard.js"></script>
+</body>
+
+</html>
