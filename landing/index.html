@@ -1,99 +1,1140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Customer Service for Indian Businesses</title>
-    <meta name="description" content="We help Indian businesses never miss a customer again. AI that speaks your customers' language—Hindi, Hinglish, or English.">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoiceFlow — AI WhatsApp Customer Service for Indian MSMEs</title>
+  <meta name="description" content="VoiceFlow is an AI-powered WhatsApp customer service platform built for Indian small businesses. Replies in Hindi, Tamil, Telugu — automatically. 24/7." />
+
+  <!-- Fontshare: Clash Display + Satoshi -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #05080f;
+      --teal:      #00d4aa;
+      --teal-dim:  rgba(0, 212, 170, 0.15);
+      --teal-glow: rgba(0, 212, 170, 0.35);
+      --gold:      #f5c542;
+      --white:     #f0f4f8;
+      --muted:     #8a94a6;
+      --surface:   rgba(255,255,255,0.035);
+      --border:    rgba(255,255,255,0.07);
+      --radius-lg: 20px;
+      --radius-md: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Satoshi', system-ui, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       NOISE TEXTURE OVERLAY
+    ============================================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ============================================================
+       IMAGE BACKGROUND SYSTEM
+    ============================================================ */
+    #bg-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* The actual background image — slow Ken Burns zoom */
+    #bg-img {
+      position: absolute;
+      inset: -6%;
+      width: 112%;
+      height: 112%;
+      background: url('assets/bg.png') center center / cover no-repeat;
+      animation: ken-burns 28s ease-in-out infinite alternate;
+      transform-origin: center center;
+    }
+
+    @keyframes ken-burns {
+      0%   { transform: scale(1)    translateX(0%)    translateY(0%); }
+      33%  { transform: scale(1.06) translateX(-1.5%) translateY(1%); }
+      66%  { transform: scale(1.04) translateX(1.5%)  translateY(-1%); }
+      100% { transform: scale(1.08) translateX(0%)    translateY(2%); }
+    }
+
+    /* Dark overlay for text legibility */
+    #bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 8, 15, 0.72);
+    }
+
+    /* Animated scan-line sweep */
+    #bg-scanline {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 212, 170, 0.03) 50%,
+        transparent 100%
+      );
+      background-size: 100% 8px;
+      animation: scanlines 12s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes scanlines {
+      0%   { background-position: 0 0; }
+      100% { background-position: 0 300px; }
+    }
+
+    /* Pulsing teal radial vignette glow from center */
+    #bg-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 60% 50% at 50% 50%,
+        rgba(0, 212, 170, 0.07) 0%,
+        transparent 70%
+      );
+      animation: glow-pulse 6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.6; }
+      50%       { opacity: 1.0; }
+    }
+
+    /* Floating orbs */
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: orb-drift linear infinite;
+      pointer-events: none;
+    }
+    .bg-orb-1 {
+      width: 420px; height: 420px;
+      background: rgba(0,212,170,0.07);
+      top: 10%; left: 5%;
+      animation-duration: 40s;
+      animation-name: orb-drift-1;
+    }
+    .bg-orb-2 {
+      width: 320px; height: 320px;
+      background: rgba(245,197,66,0.05);
+      top: 55%; right: 8%;
+      animation-duration: 52s;
+      animation-name: orb-drift-2;
+    }
+    .bg-orb-3 {
+      width: 280px; height: 280px;
+      background: rgba(0,212,170,0.05);
+      bottom: 10%; left: 40%;
+      animation-duration: 46s;
+      animation-name: orb-drift-1;
+      animation-delay: -15s;
+    }
+    @keyframes orb-drift-1 {
+      0%   { transform: translate(0px,   0px); }
+      25%  { transform: translate(30px, -20px); }
+      50%  { transform: translate(15px,  40px); }
+      75%  { transform: translate(-25px, 15px); }
+      100% { transform: translate(0px,   0px); }
+    }
+    @keyframes orb-drift-2 {
+      0%   { transform: translate(0px,   0px); }
+      25%  { transform: translate(-20px, 25px); }
+      50%  { transform: translate(30px, -15px); }
+      75%  { transform: translate(10px,  30px); }
+      100% { transform: translate(0px,   0px); }
+    }
+
+    /* Everything above bg */
+    .page-wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ============================================================
+       UTILITY
+    ============================================================ */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .teal { color: var(--teal); }
+    .gold { color: var(--gold); }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 0;
+      transition: background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(5, 8, 15, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo .logo-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 12px var(--teal);
+      animation: pulse-dot 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 8px var(--teal); opacity: 1; }
+      50% { box-shadow: 0 0 20px var(--teal), 0 0 40px var(--teal-glow); opacity: 0.8; }
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 36px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .btn-nav {
+      padding: 10px 22px;
+      border: 1px solid var(--teal);
+      background: transparent;
+      color: var(--teal);
+      font-family: 'Satoshi', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-nav:hover {
+      background: var(--teal-dim);
+      box-shadow: 0 0 22px var(--teal-glow);
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.04em;
+      margin-bottom: 36px;
+      animation: fade-up 0.7s ease both;
+    }
+    .hero-badge::before {
+      content: '🇮🇳';
+      font-size: 1rem;
+    }
+
+    .hero-headline {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(44px, 7vw, 80px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 18px;
+      animation: fade-up 0.75s 0.1s ease both;
+    }
+    .hero-headline .line-accent {
+      background: linear-gradient(90deg, var(--teal), #00f0c8, var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200%;
+      animation: shimmer 4s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .hero-sub {
+      font-family: 'Satoshi', sans-serif;
+      font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 48px;
+      animation: fade-up 0.8s 0.2s ease both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+      animation: fade-up 0.85s 0.3s ease both;
+    }
+
+    .btn-primary {
+      position: relative;
+      padding: 15px 36px;
+      background: var(--teal);
+      color: #03241c;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.25s;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 16px;
+      background: var(--teal-glow);
+      filter: blur(18px);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 36px var(--teal-glow); }
+    .btn-primary:hover::before { opacity: 1; }
+
+    /* Glowing halo ring behind primary CTA */
+    .cta-halo {
+      position: relative;
+      display: inline-block;
+    }
+    .cta-halo::after {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 24px;
+      background: radial-gradient(ellipse, var(--teal-glow) 0%, transparent 70%);
+      z-index: -1;
+      animation: halo-pulse 3s ease-in-out infinite;
+    }
+    @keyframes halo-pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.08); }
+    }
+
+    .btn-ghost {
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--white);
+      font-family: 'Satoshi', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      transition: all 0.25s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.18); }
+    .btn-ghost .play-icon {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--teal-dim);
+      border: 1px solid var(--teal);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-ghost .play-icon::after {
+      content: '';
+      border-left: 6px solid var(--teal);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      margin-left: 2px;
+    }
+
+    /* Social proof avatars */
+    .social-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      animation: fade-up 0.9s 0.45s ease both;
+    }
+    .avatars {
+      display: flex;
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      background: linear-gradient(135deg, #1e3a5f, #0d5c4a);
+      margin-left: -10px;
+      font-size: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+    .avatar:first-child { margin-left: 0; }
+    .avatar:nth-child(2) { background: linear-gradient(135deg, #2d1a5e, #0a3f5e); }
+    .avatar:nth-child(3) { background: linear-gradient(135deg, #5e1a2a, #1a3a5e); }
+    .avatar:nth-child(4) { background: linear-gradient(135deg, #1a4a2a, #2e1a5e); }
+    .avatar:nth-child(5) { background: linear-gradient(135deg, #4a1a1a, #1a3e5e); }
+
+    .proof-text {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .proof-text span { color: var(--white); font-weight: 600; }
+
+    /* ============================================================
+       MARQUEE STRIP
+    ============================================================ */
+    #marquee-strip {
+      background: rgba(0, 212, 170, 0.04);
+      border-top: 1px solid rgba(0, 212, 170, 0.12);
+      border-bottom: 1px solid rgba(0, 212, 170, 0.12);
+      padding: 16px 0;
+      overflow: hidden;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    .marquee-set {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding-right: 0;
+    }
+    .marquee-item {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      padding: 0 28px;
+      letter-spacing: 0.02em;
+    }
+    .marquee-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 8px var(--teal);
+      flex-shrink: 0;
+    }
+
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ============================================================
+       FEATURES SECTION
+    ============================================================ */
+    #features {
+      padding: 100px 0;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      text-align: center;
+      margin-bottom: 60px;
+      color: var(--white);
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 36px 30px;
+      border-radius: var(--radius-lg);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0, 212, 170, 0.25);
+      box-shadow: 0 20px 60px rgba(0, 212, 170, 0.08);
+    }
+
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(0, 212, 170, 0.1);
+      border: 1px solid rgba(0, 212, 170, 0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 22px;
+      font-size: 1.6rem;
+    }
+
+    .feature-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-body {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* Subtle glow on each feature card icon */
+    .feature-card:nth-child(1) .feature-icon { box-shadow: 0 0 20px rgba(0, 212, 170, 0.15); }
+    .feature-card:nth-child(2) .feature-icon { background: rgba(245, 197, 66, 0.1); border-color: rgba(245,197,66,0.2); box-shadow: 0 0 20px rgba(245,197,66,0.1); }
+    .feature-card:nth-child(3) .feature-icon { background: rgba(0, 212, 170, 0.1); border-color: rgba(0,212,170,0.2); }
+
+    /* ============================================================
+       STATS ROW
+    ============================================================ */
+    #stats {
+      padding: 0 0 100px;
+    }
+
+    .stats-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 48px 40px;
+      border-radius: var(--radius-lg);
+    }
+
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 0 32px;
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid var(--border);
+    }
+    .stat-number {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       PRICING TEASER
+    ============================================================ */
+    #pricing {
+      padding: 0 0 120px;
+      text-align: center;
+    }
+
+    .pricing-card {
+      display: inline-block;
+      padding: 52px 60px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* teal glow border via box-shadow */
+    .pricing-card {
+      box-shadow: 0 0 0 1px rgba(0, 212, 170, 0.4), 0 0 40px rgba(0, 212, 170, 0.1), 0 0 80px rgba(0, 212, 170, 0.06);
+    }
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    }
+
+    .pricing-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+
+    .pricing-amount {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(44px, 7vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .pricing-amount sup {
+      font-size: 0.45em;
+      vertical-align: super;
+      color: var(--muted);
+    }
+    .pricing-amount sub {
+      font-size: 0.3em;
+      vertical-align: baseline;
+      color: var(--muted);
+    }
+
+    .pricing-note {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    .pricing-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+      text-align: left;
+    }
+    .perk {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.93rem;
+      color: var(--muted);
+    }
+    .perk::before {
+      content: '✓';
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      background: rgba(0, 212, 170, 0.12);
+      color: var(--teal);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0 40px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .footer-logo {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .footer-tagline {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+    }
+    .footer-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--white); }
+
+    .footer-social {
+      display: flex;
+      gap: 14px;
+    }
+    .social-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    .social-btn:hover {
+      border-color: var(--teal);
+      background: var(--teal-dim);
+    }
+
+    .footer-copy {
+      width: 100%;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(138,148,166,0.5);
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ============================================================
+       SCROLL ANIMATIONS
+    ============================================================ */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.34s; }
+
+    /* ============================================================
+       MOBILE RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .stats-inner {
+        flex-direction: column;
+        gap: 32px;
+        padding: 36px 24px;
+      }
+      .stat-item + .stat-item {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding-top: 32px;
+      }
+
+      .pricing-card {
+        padding: 36px 28px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 28px;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <main>
-        <!-- 1. Hero -->
-        <section class="hero">
-            <div class="hero-inner">
-                <h1>Every missed call is a lost customer.<br>We make sure that never happens.</h1>
-                <p class="hero-subtext">AI that speaks your customers' language—Hindi, Hinglish, or English. Answer calls and WhatsApp 24×7 without hiring extra staff.</p>
-                <a href="#demo" class="btn btn-primary">See how it works</a>
-                <div class="hero-demo">
-                    <div class="typing-demo">
-                        <span class="typing-label">Customer:</span>
-                        <span class="typing-line" id="typing-line"></span>
-                        <span class="typing-cursor" id="typing-cursor">|</span>
-                    </div>
-                    <div class="typing-reply" id="typing-reply"></div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 2. Problem -->
-        <section class="problem">
-            <div class="container">
-                <h2>Sound familiar?</h2>
-                <div class="problem-cards">
-                    <div class="problem-card">
-                        <span class="problem-time">Morning</span>
-                        <h3>8 missed calls before you even opened</h3>
-                        <p>While you were setting up, customers called. They hung up. They went to someone else.</p>
-                    </div>
-                    <div class="problem-card">
-                        <span class="problem-time">Afternoon</span>
-                        <h3>WhatsApp messages you couldn't reply to</h3>
-                        <p>Busy with a customer. Ten messages piled up. By evening, three had chosen another shop.</p>
-                    </div>
-                    <div class="problem-card">
-                        <span class="problem-time">Evening</span>
-                        <h3>The ones who never came back</h3>
-                        <p>No reply, no follow-up. They assumed you didn't care. You did. You just couldn't.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- ============================================================
+     BACKGROUND IMAGE SYSTEM
+============================================================ -->
+<div id="bg-wrap" aria-hidden="true">
+  <div id="bg-img"></div>
+  <div id="bg-overlay"></div>
+  <div id="bg-scanline"></div>
+  <div id="bg-glow"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+</div>
 
-        <!-- 3. Demo -->
-        <section class="demo" id="demo">
-            <div class="container">
-                <h2>See it in action</h2>
-                <div class="whatsapp-frame">
-                    <div class="whatsapp-header">
-                        <span class="whatsapp-back">←</span>
-                        <span class="whatsapp-avatar"></span>
-                        <div class="whatsapp-info">
-                            <span class="whatsapp-name">Dr. Sharma Clinic</span>
-                            <span class="whatsapp-status">online</span>
-                        </div>
-                        <span class="whatsapp-menu">⋮</span>
-                    </div>
-                    <div class="whatsapp-chat">
-                        <div class="chat-bubble chat-customer">
-                            <p>Clinic open hai?</p>
-                        </div>
-                        <div class="chat-bubble chat-ai">
-                            <p>Haan ji 😊 Clinic 10 AM se 8 PM tak open hai. Kya aapko appointment chahiye?</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<div class="page-wrapper">
 
-        <!-- 4. Final CTA -->
-        <section class="cta">
-            <div class="cta-inner">
-                <h2>Stop missing customers. Start today.</h2>
-                <p class="cta-subtext">Join early access. No credit card. We'll set it up in 24 hours.</p>
-                <a href="#" class="btn btn-primary btn-large">Get early access</a>
-            </div>
-        </section>
-    </main>
+  <!-- ============================================================
+       NAVBAR
+  ============================================================ -->
+  <nav id="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-dot"></span>
+        VoiceFlow
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#stats">Results</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+      <a href="#pricing" class="btn-nav">Get Early Access</a>
+    </div>
+  </nav>
 
-    <footer class="footer">
-        <p>We help Indian businesses never miss a customer again.</p>
-        <p class="footer-copy">&copy; 2026 AI Customer Service. Built for India.</p>
-    </footer>
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section id="hero">
+    <div class="glass hero-badge">
+      Built for Bharat · WhatsApp-Native AI
+    </div>
 
-    <script src="js/main.js"></script>
+    <h1 class="hero-headline">
+      Your business,<br />
+      <span class="line-accent">always online.</span>
+    </h1>
+
+    <p class="hero-sub">In Hindi. In Tamil. In their language.</p>
+
+    <div class="hero-ctas">
+      <div class="cta-halo">
+        <a href="#pricing" class="btn-primary">Start Free Pilot</a>
+      </div>
+      <a href="#" class="btn-ghost">
+        <span class="play-icon"></span>
+        Watch Demo
+      </a>
+    </div>
+
+    <div class="social-proof">
+      <div class="avatars">
+        <div class="avatar">R</div>
+        <div class="avatar">P</div>
+        <div class="avatar">A</div>
+        <div class="avatar">S</div>
+        <div class="avatar">M</div>
+      </div>
+      <p class="proof-text">Trusted by <span>200+ MSMEs</span> across India</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MARQUEE STRIP
+  ============================================================ -->
+  <div id="marquee-strip" aria-label="Supported languages">
+    <div class="marquee-track">
+      <!-- Set 1 -->
+      <div class="marquee-set">
+        <span class="marquee-item">Hindi</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">தமிழ்</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">తెలుగు</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">বাংলা</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">मराठी</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">ਪੰਜਾਬੀ</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">Hinglish</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">English</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <!-- Set 2 (duplicate for seamless loop) -->
+      <div class="marquee-set">
+        <span class="marquee-item">Hindi</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">தமிழ்</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">తెలుగు</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">বাংলা</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">मराठी</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">ਪੰਜਾਬੀ</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">Hinglish</span>
+        <span class="marquee-dot"></span>
+        <span class="marquee-item">English</span>
+        <span class="marquee-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FEATURES GRID
+  ============================================================ -->
+  <section id="features">
+    <div class="container">
+      <p class="section-label reveal">What makes VoiceFlow different</p>
+      <h2 class="section-title reveal">
+        Built for the <em>real</em> India.<br />Not the Silicon Valley one.
+      </h2>
+
+      <div class="features-grid">
+        <div class="feature-card glass reveal">
+          <div class="feature-icon">💬</div>
+          <h3 class="feature-title">Lives on WhatsApp.<br />Zero app downloads.</h3>
+          <p class="feature-body">Your customers already use WhatsApp. VoiceFlow plugs straight in — no QR codes, no onboarding friction. Just a number they can message.</p>
+        </div>
+
+        <div class="feature-card glass reveal reveal-delay-1">
+          <div class="feature-icon">🌙</div>
+          <h3 class="feature-title">Replies at 2AM<br />so you don't have to.</h3>
+          <p class="feature-body">Every query answered instantly, round the clock. Sleep. Take a holiday. VoiceFlow holds the fort — and escalates when it matters.</p>
+        </div>
+
+        <div class="feature-card glass reveal reveal-delay-2">
+          <div class="feature-icon">🤝</div>
+          <h3 class="feature-title">Hands off to humans.<br />Instantly.</h3>
+          <p class="feature-body">Sensitive query? Complaint? Refund request? VoiceFlow knows when to step back and connects the customer to your team in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STATS ROW
+  ============================================================ -->
+  <section id="stats">
+    <div class="container">
+      <div class="stats-inner glass reveal">
+        <div class="stat-item">
+          <div class="stat-number">94<span style="font-size:0.5em;color:var(--muted)">%</span></div>
+          <div class="stat-label">Queries resolved without human</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">&lt;3<span style="font-size:0.4em;color:var(--muted)">s</span></div>
+          <div class="stat-label">Average response time</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">8+</div>
+          <div class="stat-label">Indian languages supported</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">200<span style="font-size:0.4em;color:var(--muted)">+</span></div>
+          <div class="stat-label">MSMEs on the platform</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PRICING TEASER
+  ============================================================ -->
+  <section id="pricing">
+    <div class="container" style="text-align:center;">
+      <p class="section-label reveal">Simple pricing</p>
+      <h2 class="section-title reveal">No enterprise BS.<br /><em>Just results.</em></h2>
+
+      <div class="pricing-card glass reveal">
+        <p class="pricing-eyebrow">Starter Plan</p>
+        <div class="pricing-amount">
+          <sup>₹</sup>499<sub>/ month</sub>
+        </div>
+        <p class="pricing-note">No setup fees &nbsp;·&nbsp; No contracts &nbsp;·&nbsp; Cancel anytime</p>
+
+        <div class="pricing-perks">
+          <div class="perk">Unlimited WhatsApp conversations</div>
+          <div class="perk">8 Indian languages, auto-detected</div>
+          <div class="perk">Instant human handoff</div>
+          <div class="perk">Admin dashboard + conversation logs</div>
+          <div class="perk">14-day free pilot — no card needed</div>
+        </div>
+
+        <div class="cta-halo" style="display:inline-block">
+          <a href="#" class="btn-primary" style="font-size:1.05rem;padding:16px 44px;">
+            Start Free Pilot →
+          </a>
+        </div>
+
+        <p style="margin-top:18px;font-size:0.8rem;color:var(--muted);">
+          Questions? WhatsApp us at <span style="color:var(--teal)">+91 99999 00000</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="footer-logo">VoiceFlow</span>
+          <span class="footer-tagline">AI customer service for Bharat's small businesses</span>
+        </div>
+
+        <div class="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Blog</a>
+          <a href="#">Contact</a>
+        </div>
+
+        <div class="footer-social">
+          <a href="#" class="social-btn" title="Twitter/X">𝕏</a>
+          <a href="#" class="social-btn" title="LinkedIn">in</a>
+          <a href="#" class="social-btn" title="WhatsApp">📱</a>
+        </div>
+      </div>
+
+      <p class="footer-copy">
+        © 2026 VoiceFlow. Made with ❤️ for Indian small businesses.
+      </p>
+    </div>
+  </footer>
+
+</div><!-- /page-wrapper -->
+
+<!-- Canvas removed: background is now the generated AI/WhatsApp image with CSS animations -->
+
+<!-- ============================================================
+     NAVBAR SCROLL EFFECT
+============================================================ -->
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+</script>
+
+<!-- ============================================================
+     SCROLL REVEAL
+============================================================ -->
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+<!-- ============================================================
+     SMOOTH COUNTER ANIMATION (stats)
+============================================================ -->
+<script>
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const countIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      countIO.unobserve(entry.target);
+    });
+  }, { threshold: 0.4 });
+  statNumbers.forEach(el => countIO.observe(el));
+</script>
+
 </body>
 </html>

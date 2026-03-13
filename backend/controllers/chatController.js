@@ -6,6 +6,7 @@
 const Business = require('../models/Business');
 const Conversation = require('../models/Conversation');
 const DailyMetrics = require('../models/DailyMetrics');
+const FAQ = require('../models/FAQ');
 const aiService = require('../services/aiService');
 const fallbackService = require('../services/fallbackService');
 const memoryService = require('../services/memoryService');
@@ -32,17 +33,21 @@ exports.chat = async (req, res) => {
             return res.status(404).json({ message: 'Business not found' });
         }
 
-        // 2. Get recent conversation history (for context)
+        // 2. Fetch FAQ list for this business (injected into system prompt)
+        const faqs = await FAQ.find({ businessId: business_id }).sort({ createdAt: 1 }).lean();
+
+        // 3. Get recent conversation history (for context)
         const recentHistory = await memoryService.getRecentConversations(business_id, 5);
 
-        // 3. Call AI service
+        // 4. Call AI service with business context + FAQs + history
         const { ai_response, confidence_score } = await aiService.generateResponse(
             user_message,
             business,
-            recentHistory
+            recentHistory,
+            faqs
         );
 
-        // 4. Check if we should escalate to human
+        // 5. Check if we should escalate to human
         const { shouldEscalate, fallbackMessage } = fallbackService.evaluate(
             user_message,
             ai_response,
