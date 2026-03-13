@@ -1,7 +1,7 @@
 /**
  * AI Service
  * Calls LLM (Claude / Gemini / OpenAI) via API.
- * Builds dynamic system prompt from business context.
+ * Builds dynamic system prompt from business context + live FAQ data.
  * Returns { ai_response, confidence_score }.
  *
  * Set in .env:
@@ -10,31 +10,59 @@
  * - GOOGLE_AI_API_KEY (for Gemini)
  * - OPENAI_API_KEY (for OpenAI)
  */
-const buildSystemPrompt = (business) => {
-    const servicesList = Array.isArray(business.services) && business.services.length
-        ? business.services.join(', ')
-        : 'General inquiries';
 
-    return `You are a polite AI assistant for "${business.business_name}", a ${business.business_type} in India.
+/**
+ * Build the dynamic system prompt using business context and FAQ list.
+ * Follows the WhatsApp assistant template with full multi-language support.
+ *
+ * @param {Object} business - Business document from DB
+ * @param {Array}  faqs     - Array of FAQ objects { question, answer, category }
+ */
+const buildSystemPrompt = (business, faqs = []) => {
+    const cityOrLocation = business.location || 'India';
+
+    // Format FAQ list for injection
+    let faqBlock = '';
+    if (faqs.length > 0) {
+        faqBlock = faqs
+            .map((f, i) => `Q${i + 1}: ${f.question}\nA${i + 1}: ${f.answer}`)
+            .join('\n\n');
+    } else {
+        // Fall back to service/hours info from business doc
+        const servicesList = Array.isArray(business.services) && business.services.length
+            ? business.services.join(', ')
+            : 'General inquiries';
+        faqBlock =
+            `Q1: What services do you offer?\nA1: ${servicesList}\n\n` +
+            `Q2: What are your working hours?\nA2: ${business.working_hours || 'Please contact us for timings.'}\n\n` +
+            `Q3: Do I need an appointment?\nA3: ${business.appointment_required ? 'Yes, please book an appointment in advance.' : 'No appointment needed, walk-ins welcome.'}`;
+    }
+
+    return `You are a helpful customer service assistant for "${business.business_name}", \
+a ${business.business_type} located in ${cityOrLocation}, India.
+
+LANGUAGE RULES:
+- Detect the language of the customer's message automatically
+- Always reply in the SAME language the customer used
+- Support: Hindi, Hinglish, English, Tamil, Telugu, Bengali, Marathi
+- For Hinglish, respond naturally in Hinglish (mix of Hindi + English)
+- Keep tone warm, friendly, and respectful — like a helpful shop assistant
 
 BUSINESS CONTEXT (use ONLY this info — never guess):
-- Name: ${business.business_name}
-- Type: ${business.business_type}
-- Phone: ${business.phone}
-- Working Hours: ${business.working_hours}
-- Services: ${servicesList}
-- Appointment Required: ${business.appointment_required ? 'Yes' : 'No'}
+${faqBlock}
 
-STRICT RULES:
-1. Use polite Indian tone: "ji", "please", "thank you", "sir/ma'am"
-2. Keep replies SHORT (under 50 words)
-3. If info is NOT in the context above, say: "I don't have that info. Let me connect you to a human."
-4. Use Hinglish if the customer writes in Hinglish
-5. For timings → use working_hours exactly
-6. For appointments → if appointment_required is true, ask for date/time
-7. NEVER make up prices, addresses, or details not provided
-8. If unsure, offer to connect to human`;
+YOUR BEHAVIOR:
+- Answer only questions related to this business
+- If you don't know something, say: "Main abhi sure nahi hoon, ek minute mein hum aapko connect karte hain" and indicate escalation is needed
+- Never make up prices, timings, or availability — only use the FAQ data above
+- Keep responses SHORT (2-3 lines max) — this is WhatsApp, not email
+- If customer seems angry or frustrated, immediately offer human handoff
 
+ESCALATE TO HUMAN when:
+- Customer asks something not in the FAQ above
+- Customer says "human", "agent", "staff", "insaan se baat"
+- Complaint, refund, or return request
+- Medical, legal, or other sensitive queries`;
 };
 
 const buildUserPrompt = (userMessage, recentHistory = []) => {
@@ -58,15 +86,9 @@ const buildUserPrompt = (userMessage, recentHistory = []) => {
 const callLLM = async (systemPrompt, userPrompt) => {
     const provider = (process.env.LLM_PROVIDER || 'claude').toLowerCase();
 
-    if (provider === 'claude') {
-        return callClaude(systemPrompt, userPrompt);
-    }
-    if (provider === 'openai') {
-        return callOpenAI(systemPrompt, userPrompt);
-    }
-    if (provider === 'gemini') {
-        return callGemini(systemPrompt, userPrompt);
-    }
+    if (provider === 'claude') return callClaude(systemPrompt, userPrompt);
+    if (provider === 'openai') return callOpenAI(systemPrompt, userPrompt);
+    if (provider === 'gemini') return callGemini(systemPrompt, userPrompt);
 
     // Fallback: no API key — use rule-based demo
     return fallbackDemoResponse(userPrompt);
@@ -173,34 +195,65 @@ const callGemini = async (systemPrompt, userPrompt) => {
 };
 
 /**
- * Demo mode when no API key is set — keyword-based responses
+ * Demo mode when no API key is set — keyword-based Hinglish responses.
+ * Handles a broader set of Hindi, Hinglish, and regional language keywords.
  */
 const fallbackDemoResponse = (userPrompt) => {
     const msg = userPrompt.split('Current customer message:')[1]?.trim() || userPrompt;
     const lower = msg.toLowerCase();
 
-    if (lower.includes('open') || lower.includes('kab') || lower.includes('time') || lower.includes('hai')) {
+    // Timings / hours
+    if (lower.match(/open|kab|time|timings|hours|baje|ghante|samay|waqt/)) {
         return {
-            ai_response: 'Haan ji, clinic 10 AM se 8 PM tak open hai. Aap kabhi bhi aa sakte hain!',
+            ai_response: 'Haan ji! Hum 10 AM se 8 PM tak open rehte hain. Koi aur sawaal hai? 😊',
             confidence_score: 0.9
         };
     }
-    if (lower.includes('price') || lower.includes('kitna') || lower.includes('cost')) {
+
+    // Appointment / booking
+    if (lower.match(/appointment|book|booking|schedule|slot|kab aayein|milna/)) {
         return {
-            ai_response: 'Price service ke hisaab se hota hai. Kya main aapko human agent se connect karwaun for details?',
-            confidence_score: 0.5
-        };
-    }
-    if (lower.includes('appointment') || lower.includes('book')) {
-        return {
-            ai_response: 'Ji bilkul. Kis date aur time ka appointment chahiye aapko?',
-            confidence_score: 0.85
+            ai_response: 'Ji bilkul! Appointment ke liye kaun si date aur time theek rehega aapke liye?',
+            confidence_score: 0.88
         };
     }
 
+    // Price / cost
+    if (lower.match(/price|kitna|cost|fees|charge|rate|paisa|rupee|kitne ka/)) {
+        return {
+            ai_response: 'Price service ke hisaab se alag-alag hoti hai. Kya main aapko ek agent se connect karwaun jo sahi details de sake?',
+            confidence_score: 0.55
+        };
+    }
+
+    // Complaint / refund / return — escalate
+    if (lower.match(/complaint|complain|shikayat|refund|wapas|return|problem|issue|dikkat|trouble/)) {
+        return {
+            ai_response: 'Main abhi sure nahi hoon, ek minute mein hum aapko connect karte hain. 🙏',
+            confidence_score: 0.3
+        };
+    }
+
+    // Location / address
+    if (lower.match(/address|location|kahan|kahaan|where|gali|street|city/)) {
+        return {
+            ai_response: 'Humara address aapko WhatsApp pe share kar dete hain. Ek second! 📍',
+            confidence_score: 0.75
+        };
+    }
+
+    // Services
+    if (lower.match(/service|kya karte|kya milega|offer|available|kya hai/)) {
+        return {
+            ai_response: 'Hum kai tarah ki services provide karte hain. Koi specific cheez batayein, main madad karunga! 😊',
+            confidence_score: 0.8
+        };
+    }
+
+    // Generic fallback
     return {
-        ai_response: 'Main samajh gaya. Thoda aur detail de sakte hain? Ya main aapko human agent se connect karwaun?',
-        confidence_score: 0.6
+        ai_response: 'Samajh gaya ji. Thoda aur detail de sakte hain? Ya main aapko human agent se connect karwaun?',
+        confidence_score: 0.5
     };
 };
 
@@ -214,9 +267,14 @@ const extractConfidence = (text) => {
 
 /**
  * Main entry: generate AI response
+ *
+ * @param {string} userMessage    - The customer's message
+ * @param {Object} business       - Business document from DB
+ * @param {Array}  recentHistory  - Last N conversation turns
+ * @param {Array}  faqs           - FAQ documents for this business
  */
-const generateResponse = async (userMessage, business, recentHistory = []) => {
-    const systemPrompt = buildSystemPrompt(business);
+const generateResponse = async (userMessage, business, recentHistory = [], faqs = []) => {
+    const systemPrompt = buildSystemPrompt(business, faqs);
     const userPrompt = buildUserPrompt(userMessage, recentHistory);
     return callLLM(systemPrompt, userPrompt);
 };

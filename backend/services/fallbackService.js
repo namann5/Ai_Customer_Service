@@ -6,20 +6,37 @@
  * - confidence_score < 0.6
  * - Question is outside business domain
  * - User explicitly asks for human
+ * - Complaint / refund / sensitive query detected
  */
-const FALLBACK_MESSAGE = "I'm connecting you to a human for better assistance. Please wait a moment.";
 
+// Hindi escalation message matching the WhatsApp assistant spec
+const FALLBACK_MESSAGE =
+    'Main abhi sure nahi hoon, ek minute mein hum aapko connect karte hain. 🙏';
+
+// Keywords that mean the customer wants a human — includes Hindi/Hinglish/regional variants
 const HUMAN_REQUEST_KEYWORDS = [
+    // English
     'human', 'agent', 'person', 'talk to someone', 'manager', 'owner',
-    'insaan', 'baat karao', 'kisi se baat', 'complain', 'complaint', 'issue',
-    'real person', 'actual person'
+    'real person', 'actual person', 'staff',
+    // Hindi / Hinglish
+    'insaan', 'insaan se baat', 'baat karao', 'kisi se baat', 'aadmi se baat',
+    'manager ko bulaao', 'owner se baat',
+    // Complaints / refund — also triggers escalation
+    'complain', 'complaint', 'complaint karna', 'shikayat',
+    'refund', 'wapas karo', 'wapas chahiye', 'return',
 ];
 
+/**
+ * Check if the customer is explicitly asking for a human or escalation
+ */
 const isExplicitHumanRequest = (message) => {
     const lower = (message || '').toLowerCase();
     return HUMAN_REQUEST_KEYWORDS.some((kw) => lower.includes(kw));
 };
 
+/**
+ * Check for off-topic / outside-domain messages
+ */
 const DOMAIN_OUTSIDE_PATTERNS = [
     /political/i, /election/i, /cricket/i, /movie/i, /weather/i,
     /stock/i, /crypto/i, /bitcoin/i, /recipe/i, /joke/i
@@ -30,8 +47,20 @@ const isOutsideDomain = (message) => {
 };
 
 /**
+ * Check for sensitive queries — medical / legal / financial
+ * These should always be escalated to a human.
+ */
+const SENSITIVE_PATTERNS = [
+    /medicine|medical|diagnosis|prescription|doctor se|legal|lawyer|court|insurance|lawsuit/i
+];
+
+const isSensitiveQuery = (message) => {
+    return SENSITIVE_PATTERNS.some((p) => p.test(message || ''));
+};
+
+/**
  * Evaluate whether to escalate to human
- * @returns { shouldEscalate, fallbackMessage }
+ * @returns {{ shouldEscalate: boolean, fallbackMessage: string }}
  */
 const evaluate = (userMessage, aiResponse, confidenceScore, business) => {
     if (!business?.human_fallback) {
@@ -39,6 +68,10 @@ const evaluate = (userMessage, aiResponse, confidenceScore, business) => {
     }
 
     if (isExplicitHumanRequest(userMessage)) {
+        return { shouldEscalate: true, fallbackMessage: FALLBACK_MESSAGE };
+    }
+
+    if (isSensitiveQuery(userMessage)) {
         return { shouldEscalate: true, fallbackMessage: FALLBACK_MESSAGE };
     }
 
@@ -53,4 +86,4 @@ const evaluate = (userMessage, aiResponse, confidenceScore, business) => {
     return { shouldEscalate: false, fallbackMessage: FALLBACK_MESSAGE };
 };
 
-module.exports = { evaluate, isExplicitHumanRequest };
+module.exports = { evaluate, isExplicitHumanRequest, isSensitiveQuery };
