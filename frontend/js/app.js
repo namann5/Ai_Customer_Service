@@ -3,7 +3,7 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 
 // Unique ID for session (mock)
-const businessId = 'demo-business-id';
+const businessId = '69b430be0a67146001f6d19c';
 
 // Auto-scroll to bottom
 function scrollToBottom() {
@@ -36,8 +36,8 @@ chatForm.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                businessId: businessId,
-                message: message
+                business_id: businessId,
+                user_message: message
             })
         });
 

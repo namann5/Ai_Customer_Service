@@ -253,7 +253,7 @@ const fallbackDemoResponse = (userPrompt) => {
     // Generic fallback
     return {
         ai_response: 'Samajh gaya ji. Thoda aur detail de sakte hain? Ya main aapko human agent se connect karwaun?',
-        confidence_score: 0.5
+        confidence_score: 0.7
     };
 };
 
