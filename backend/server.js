@@ -55,6 +55,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error' });
 });
 
+const Business = require('./models/Business');
+
 const seedCustomers = async () => {
   const count = await Customer.countDocuments();
   if (count === 0) {
@@ -64,6 +66,20 @@ const seedCustomers = async () => {
       { name: 'Mohan Kirana', phone: '+919876543212', businessType: 'kirana' }
     ]);
     console.log('Seeded 3 sample customers');
+  }
+
+  // Seed the frontend demo business so the hardcoded ID always works
+  const demoBusinessId = '69b430be0a67146001f6d19c';
+  const existingBusiness = await Business.findById(demoBusinessId);
+  if (!existingBusiness) {
+    await Business.create({
+      _id: demoBusinessId,
+      business_name: 'Frontend Demo Business',
+      business_type: 'retail',
+      phone: '1112223334',
+      working_hours: '10 AM - 8 PM'
+    });
+    console.log('Seeded 1 frontend demo business');
   }
 };
 
